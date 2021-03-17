@@ -62,6 +62,14 @@ RUN git clone https://github.com/suchitm/dotenv.git ~/dotenv/ && \
 RUN pip3 install apache-airflow && \
 	pip3 install SQLAlchemy==1.3.23
 
+#RUN airflow db init && \
+#	airflow users create \
+#		--username admin \
+#		--firstname Anon \
+#		--lastname AAdmin \
+#		--role Admin \
+#		--email admin@example.com
+
 #RUN apt-get install -y --no-install-recommends \ 
 #	default-jdk \
 #	file \

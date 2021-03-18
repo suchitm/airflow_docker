@@ -20,9 +20,13 @@ RUN apt-get install -y --no-install-recommends bash \
 	curl \
 	git \
 	libbz2-dev \
+	libdb5.3-dev \
+	libexpat1-dev \
 	libffi-dev \ 
 	libgdbm-dev \ 
+	liblzma-dev \
 	libncurses5-dev \ 
+	libncursesw5-dev \ 
 	libnss3-dev \ 
 	libreadline-dev \ 
 	libsqlite3-dev \ 
@@ -33,6 +37,8 @@ RUN apt-get install -y --no-install-recommends bash \
 	openssh-client \
 	python3 \
 	python3-pip \
+	software-properties-common \
+	tk-dev \
 	tmux \
 	wget \ 
 	zlib1g-dev \
@@ -51,24 +57,24 @@ RUN apt-get install -y --no-install-recommends \
 	sqlite3 \
 	unixodbc
 
-RUN curl -L https://github.com/robbyrussell/oh-my-zsh/raw/master/tools/install.sh | zsh || true
-
 RUN git clone https://github.com/suchitm/dotenv.git ~/dotenv/ && \
 	ln -s ~/dotenv/dotvim/vimrc ~/.vimrc && \
 	ln -s ~/dotenv/tmux/tmux.conf ~/.tmux.conf && \ 
 	ln -s ~/dotvim/ ~/.vim 
 
 # install python packages for airflow
-RUN pip3 install apache-airflow && \
-	pip3 install SQLAlchemy==1.3.23
+RUN pip3 install apache-airflow==1.10.14 && \
+	pip3 install marshmallow==2.21.0 && \
+	pip3 install SQLAlchemy==1.3.23 
 
-#RUN airflow db init && \
-#	airflow users create \
-#		--username admin \
-#		--firstname Anon \
-#		--lastname AAdmin \
-#		--role Admin \
-#		--email admin@example.com
+RUN airflow db init && \
+	airflow users create \
+		--username airflow \
+		--firstname Anon \
+		--lastname Anon \
+		--role Admin \
+		--email admin@example.com \ 
+		--password airflow
 
 #RUN apt-get install -y --no-install-recommends \ 
 #	default-jdk \

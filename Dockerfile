@@ -64,9 +64,8 @@ RUN git clone https://github.com/suchitm/dotenv.git ~/dotenv/ && \
 
 # install python packages for airflow
 RUN pip3 install apache-airflow==1.10.14 && \
-	pip3 install apache-airflow-providers-postgres && \
 	pip3 install marshmallow==2.21.0 && \
-	pip3 install SQLAlchemy==1.3.23 &&
+	pip3 install SQLAlchemy==1.3.23
 
 RUN airflow db init && \
 	airflow users create \

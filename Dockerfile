@@ -16,6 +16,7 @@ RUN apt-get install -y --no-install-recommends locales \
 
 RUN apt-get install -y --no-install-recommends bash \
 	build-essential \
+	bzip2 \
 	ca-certificates \
 	curl \
 	git \
@@ -31,15 +32,19 @@ RUN apt-get install -y --no-install-recommends bash \
 	libreadline-dev \ 
 	libsqlite3-dev \ 
 	libssl-dev \
+	libzma-dev \
 	less \
 	man \
 	neovim \
 	openssh-client \
-	python3 \
+	postgresql \
+	postgresql-contrib \
+	python3-venv \
 	python3-pip \
 	software-properties-common \
 	tk-dev \
 	tmux \
+	unixodbc-dev \
 	wget \ 
 	zlib1g-dev \
 	zsh 
@@ -55,7 +60,6 @@ RUN apt-get install -y --no-install-recommends \
 	lsb-release \
 	sasl2-bin \
 	sqlite3 \
-	unixodbc
 
 RUN git clone https://github.com/suchitm/dotenv.git ~/dotenv/ && \
 	ln -s ~/dotenv/dotvim/vimrc ~/.vimrc && \
@@ -64,6 +68,8 @@ RUN git clone https://github.com/suchitm/dotenv.git ~/dotenv/ && \
 
 # install python packages for airflow
 RUN pip3 install apache-airflow==1.10.14 && \
+	pip3 install apache-airflow-backport-providers-google==2020.11.13 && \
+	pip3 install apache-airflow-backport-providers-postgres && \
 	pip3 install marshmallow==2.21.0 && \
 	pip3 install SQLAlchemy==1.3.23
 

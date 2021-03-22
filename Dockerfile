@@ -20,7 +20,10 @@ RUN apt-get update && \
 	bzip2 \
 	ca-certificates \
 	curl \
+	freetds-bin \
 	git \
+      	ldap-utils \
+	less \
 	libbz2-dev \
 	libdb5.3-dev \
 	libexpat1-dev \
@@ -31,56 +34,55 @@ RUN apt-get update && \
 	libncursesw5-dev \ 
 	libnss3-dev \ 
 	libreadline-dev \ 
+      	libsasl2-2 \
+      	libsasl2-modules \
 	libsqlite3-dev \ 
 	libssl-dev \
 	liblzma-dev \
-	less \
+	lsb-release \
 	man \
 	neovim \
 	openssh-client \
 	postgresql \
 	postgresql-contrib \
 	python3-venv \
-	python3-pip \
+	software-properties-common \
+	sqlite3 \
 	tk-dev \
 	tmux \
-	unixodbc-dev
-	# wget \ 
-	# zlib1g-dev \
-	# zsh 
-
-RUN apt-get update && \
-	apt-get install -y --no-install-recommends --fix-missing \ 
-		software-properties-common
-
-## airflow dependencies
-#RUN apt-get install -y --no-install-recommends \
-#	freetds-bin \
-#      	krb5-user \
-#      	ldap-utils \
-#      	libsasl2-2 \
-#      	libsasl2-modules \
-#	libssl1.1 \
-#	lsb-release \
-#	sasl2-bin \
-#	sqlite3 
+	unixodbc-dev \
+	wget \ 
+	zlib1g-dev \
+	zsh 
 
 RUN git clone https://github.com/suchitm/dotenv.git ~/dotenv/ && \
 	ln -s ~/dotenv/dotvim/vimrc ~/.vimrc && \
 	ln -s ~/dotenv/tmux/tmux.conf ~/.tmux.conf && \ 
 	ln -s ~/dotvim/ ~/.vim 
 
+# installing python 3.6.6 and making it the global python
+ENV HOME="/root"
+WORKDIR $HOME
+RUN git clone --depth=1 https://github.com/pyenv/pyenv.git .pyenv
+
+ENV PYENV_ROOT="$HOME/.pyenv"
+ENV PATH="$PYENV_ROOT/shims:$PYENV_ROOT/bin:$PATH"
+RUN pyenv install 3.6.6
+RUN pyenv global 3.6.6
+
+RUN pip install --upgrade pip
+
+
 # install python packages for airflow
-RUN pip3 install apache-airflow==1.10.14 \
+RUN pip install apache-airflow==1.10.14 \
 	apache-airflow-backport-providers-google==2020.11.13 \
 	apache-airflow-backport-providers-postgres \
 	apache-airflow-backport-providers-ssh \
-	appdirs==1.4.4 \
 	argcomplete==1.12.2 \
 	astunparse==1.6.3 \
 	attrs==20.3.0 \
 	azure-storage-blob>=12.0.0 \
-	boto3 \
+	boto3 \ 
 	fastavro==1.2.0 \
 	gcsfs \
 	google-cloud-bigquery==2.6.2 \
@@ -89,28 +91,29 @@ RUN pip3 install apache-airflow==1.10.14 \
 	google-cloud-secret-manager==1.0.0 \
 	google-cloud-storage==1.33.0 \
 	google-cloud-logging==1.15.0 \
-	google-cloud-error-reporting==1.1.1 \
-	marshmallow==2.21.0 \
+	google-cloud-error-reporting==1.1.1
+
+
+RUN pip install marshmallow==2.21.0 \
 	marshmallow-sqlalchemy==0.17.1 \
 	pandas==1.1.4 \
 	pandas-gbq==0.14.1 \
 	paramiko \ 
 	py7zr==0.14.1 \
-	# pyodbc==4.0.30 \ 
-	openpyxl==3.0.7 \
-	avro==1.10.1 \
-	SQLAlchemy==1.3.20 \
-	SQLAlchemy-JSONField==0.9.0 \
-	SQLAlchemy-Utils==0.36.8
+	pyodbc==4.0.30 \ 
+	openpyxl==3.0.7 
 
-RUN airflow db init && \
-	airflow users create \
-		--username airflow \
-		--firstname Anon \
-		--lastname Anon \
-		--role Admin \
-		--email admin@example.com \ 
-		--password airflow
+RUN pip install avro==1.10.1
+
+
+#RUN airflow db init && \
+#	airflow users create \
+#		--username airflow \
+#		--firstname Anon \
+#		--lastname Anon \
+#		--role Admin \
+#		--email admin@example.com \ 
+#		--password airflow
 
 #RUN apt-get install -y --no-install-recommends \ 
 #	default-jdk \

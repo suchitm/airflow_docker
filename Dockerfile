@@ -67,11 +67,36 @@ RUN git clone https://github.com/suchitm/dotenv.git ~/dotenv/ && \
 	ln -s ~/dotvim/ ~/.vim 
 
 # install python packages for airflow
-RUN pip3 install apache-airflow==1.10.14 && \
-	pip3 install apache-airflow-backport-providers-google==2020.11.13 && \
-	pip3 install apache-airflow-backport-providers-postgres && \
-	pip3 install marshmallow==2.21.0 && \
-	pip3 install SQLAlchemy==1.3.23
+RUN pip3 install apache-airflow==1.10.14 \
+	apache-airflow-backport-providers-google==2020.11.13 \
+	apache-airflow-backport-providers-postgres \
+	apache-airflow-backport-providers-ssh \
+	appdirs==1.4.4 \
+	argcomplete==1.12.2 \
+	astunparse==1.6.3 \
+	attrs==20.3.0 \
+	azure-storage-blob>=12.0.0 \
+	boto3 \
+	fastavro==1.2.0 \
+	gcsfs \
+	google-cloud-bigquery==2.6.2 \
+	google-cloud-bigquery-storage==2.1.0 \
+	google-cloud-pubsub==1.7.0 \
+	google-cloud-secret-manager=1.0.0 \
+	google-cloud-storage==1.33.0 \
+	google-cloud-logging==1.15.0 \
+	google-cloud-error-reporting==1.1.1 \
+	marshmallow-sqlalchemy==0.17.1 \
+	pandas==1.1.4 \
+	pandas-gbq==0.14.1 \
+	paramiko \ 
+	py7zr==0.14.1 \
+	pyodbc==4.0.30 \ 
+	openpyxl==3.0.7 \
+	avro==1.10.1 \
+	SQLAlchemy==1.3.20 \
+	SQLAlchemy-JSONField==0.9.0 \
+	SQLAlchemy-Utils==0.36.8
 
 RUN airflow db init && \
 	airflow users create \

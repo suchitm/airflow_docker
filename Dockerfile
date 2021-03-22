@@ -55,15 +55,14 @@ RUN apt-get update && \
 	zlib1g-dev \
 	zsh 
 
-RUN git clone https://github.com/suchitm/dotenv.git ~/dotenv/ && \
-	ln -s ~/dotenv/dotvim/vimrc ~/.vimrc && \
-	ln -s ~/dotenv/tmux/tmux.conf ~/.tmux.conf && \ 
-	ln -s ~/dotvim/ ~/.vim 
-
 # installing python 3.6.6 and making it the global python
-ENV HOME="/root"
+ENV HOME="/home"
 WORKDIR $HOME
-RUN git clone --depth=1 https://github.com/pyenv/pyenv.git .pyenv
+RUN git clone --depth=1 https://github.com/pyenv/pyenv.git .pyenv && \
+	git clone https://github.com/suchitm/dotenv.git dotenv && \
+	ln -s dotenv/dotvim/vimrc .vimrc && \
+	ln -s dotenv/tmux/tmux.conf .tmux.conf && \ 
+	ln -s dotenv/dotvim/ .vim 
 
 ENV PYENV_ROOT="$HOME/.pyenv"
 ENV PATH="$PYENV_ROOT/shims:$PYENV_ROOT/bin:$PATH"
@@ -71,7 +70,6 @@ RUN pyenv install 3.6.6
 RUN pyenv global 3.6.6
 
 RUN pip install --upgrade pip
-
 
 # install python packages for airflow
 RUN pip install apache-airflow==1.10.14 \
@@ -93,7 +91,6 @@ RUN pip install apache-airflow==1.10.14 \
 	google-cloud-logging==1.15.0 \
 	google-cloud-error-reporting==1.1.1
 
-
 RUN pip install marshmallow==2.21.0 \
 	marshmallow-sqlalchemy==0.17.1 \
 	pandas==1.1.4 \
@@ -105,6 +102,20 @@ RUN pip install marshmallow==2.21.0 \
 
 RUN pip install avro==1.10.1
 
+# airflow environment variables
+ENV AIRFLOW_HOME="$HOME/airflow"
+ENV AIRFLOW__CORE__EXECUTOR=LocalExecutor
+ENV AIRFLOW__CORE__SQL_ALCHEMY_CONN=postgresql+psycopg2://postgres:postgres@localhost/postgres
+ENV AIRFLOW__CORE__FERNET_KEY=''
+ENV AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION='true'
+ENV AIRFLOW__CORE__LOAD_EXAMPLES='false'
+RUN mkdir "$HOME/airflow/"
+
+# RUN airflow db init
+
+#RUN sed -i 's/airflow\/dags/airflow\/gcs\/dags/' /home/airflow/airflow.cfg && \
+#	sed -i 's/sqlite:\/\/\/\/home\/airflow\/airflow.db/postgresql+psycopg2:\/\/postgres:postgres@localhost\/postgres/' /home/airflow/airflow.cfg && \
+#	sed -i 's/SequentialExecutor/LocalExecutor/' /home/airflow/airflow.cfg 
 
 #RUN airflow db init && \
 #	airflow users create \

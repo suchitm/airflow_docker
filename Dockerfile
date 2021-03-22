@@ -14,7 +14,8 @@ RUN apt-get install -y --no-install-recommends locales \
 	&& locale-gen en_US.utf8 \
 	&& /usr/sbin/update-locale LANG=en_US.UTF-8
 
-RUN apt-get install -y --no-install-recommends bash \
+RUN apt-get update && \
+	apt-get install -y --no-install-recommends bash \
 	build-essential \
 	bzip2 \
 	ca-certificates \
@@ -32,7 +33,7 @@ RUN apt-get install -y --no-install-recommends bash \
 	libreadline-dev \ 
 	libsqlite3-dev \ 
 	libssl-dev \
-	libzma-dev \
+	liblzma-dev \
 	less \
 	man \
 	neovim \
@@ -41,25 +42,28 @@ RUN apt-get install -y --no-install-recommends bash \
 	postgresql-contrib \
 	python3-venv \
 	python3-pip \
-	software-properties-common \
 	tk-dev \
 	tmux \
-	unixodbc-dev \
-	wget \ 
-	zlib1g-dev \
-	zsh 
+	unixodbc-dev
+	# wget \ 
+	# zlib1g-dev \
+	# zsh 
 
-# airflow dependencies
-RUN apt-get install -y --no-install-recommends \
-	freetds-bin \
-      	krb5-user \
-      	ldap-utils \
-      	libsasl2-2 \
-      	libsasl2-modules \
-	libssl1.1 \
-	lsb-release \
-	sasl2-bin \
-	sqlite3 \
+RUN apt-get update && \
+	apt-get install -y --no-install-recommends --fix-missing \ 
+		software-properties-common
+
+## airflow dependencies
+#RUN apt-get install -y --no-install-recommends \
+#	freetds-bin \
+#      	krb5-user \
+#      	ldap-utils \
+#      	libsasl2-2 \
+#      	libsasl2-modules \
+#	libssl1.1 \
+#	lsb-release \
+#	sasl2-bin \
+#	sqlite3 
 
 RUN git clone https://github.com/suchitm/dotenv.git ~/dotenv/ && \
 	ln -s ~/dotenv/dotvim/vimrc ~/.vimrc && \
@@ -82,16 +86,17 @@ RUN pip3 install apache-airflow==1.10.14 \
 	google-cloud-bigquery==2.6.2 \
 	google-cloud-bigquery-storage==2.1.0 \
 	google-cloud-pubsub==1.7.0 \
-	google-cloud-secret-manager=1.0.0 \
+	google-cloud-secret-manager==1.0.0 \
 	google-cloud-storage==1.33.0 \
 	google-cloud-logging==1.15.0 \
 	google-cloud-error-reporting==1.1.1 \
+	marshmallow==2.21.0 \
 	marshmallow-sqlalchemy==0.17.1 \
 	pandas==1.1.4 \
 	pandas-gbq==0.14.1 \
 	paramiko \ 
 	py7zr==0.14.1 \
-	pyodbc==4.0.30 \ 
+	# pyodbc==4.0.30 \ 
 	openpyxl==3.0.7 \
 	avro==1.10.1 \
 	SQLAlchemy==1.3.20 \

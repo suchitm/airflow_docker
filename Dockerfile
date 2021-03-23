@@ -15,7 +15,8 @@ RUN apt-get install -y --no-install-recommends locales \
 	&& /usr/sbin/update-locale LANG=en_US.UTF-8
 
 RUN apt-get update && \
-	apt-get install -y --no-install-recommends bash \
+	apt-get install -y --no-install-recommends \ 
+	bash \
 	build-essential \
 	bzip2 \
 	ca-certificates \
@@ -24,7 +25,10 @@ RUN apt-get update && \
 	git \
       	ldap-utils \
 	less \
-	libbz2-dev \
+	libbz2-dev
+
+RUN apt-get update && \
+	apt-get install -y --no-install-recommends \
 	libdb5.3-dev \
 	libexpat1-dev \
 	libffi-dev \ 
@@ -34,7 +38,10 @@ RUN apt-get update && \
 	libncursesw5-dev \ 
 	libnss3-dev \ 
 	libreadline-dev \ 
-      	libsasl2-2 \
+      	libsasl2-2 
+
+RUN apt-get update && \
+	apt-get install -y --no-install-recommends \
       	libsasl2-modules \
 	libsqlite3-dev \ 
 	libssl-dev \
@@ -44,7 +51,10 @@ RUN apt-get update && \
 	neovim \
 	openssh-client \
 	postgresql \
-	postgresql-contrib \
+	postgresql-contrib
+
+RUN apt-get update && \
+	apt-get install -y --no-install-recommends \
 	software-properties-common \
 	sqlite3 \
 	sudo \
@@ -121,6 +131,10 @@ ENV AIRFLOW__CORE__FERNET_KEY=''
 ENV AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION='true'
 ENV AIRFLOW__CORE__LOAD_EXAMPLES='false'
 RUN mkdir "$HOME/airflow/"
+
+RUN service postgresql start && \
+	sudo -u postgres psql -c "ALTER user postgres WITH PASSWORD 'postgres'" && \
+	airflow db init
 
 # RUN airflow db init
 

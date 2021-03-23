@@ -45,34 +45,43 @@ RUN apt-get update && \
 	openssh-client \
 	postgresql \
 	postgresql-contrib \
-	python3-venv \
 	software-properties-common \
 	sqlite3 \
+	sudo \
 	tk-dev \
 	tmux \
 	unixodbc-dev \
 	wget \ 
 	zlib1g-dev \
 	zsh 
+	
+# installing python
+RUN wget https://www.python.org/ftp/python/3.6.10/Python-3.6.10.tgz && \
+	tar xzvf Python-3.6.10.tgz && \
+	cd Python-3.6.10 && \
+	./configure && \
+	make && \
+	make install 
 
 # installing python 3.6.6 and making it the global python
-ENV HOME="/home"
+ENV HOME="/root"
 WORKDIR $HOME
-RUN git clone --depth=1 https://github.com/pyenv/pyenv.git .pyenv && \
-	git clone https://github.com/suchitm/dotenv.git dotenv && \
-	ln -s dotenv/dotvim/vimrc .vimrc && \
-	ln -s dotenv/tmux/tmux.conf .tmux.conf && \ 
-	ln -s dotenv/dotvim/ .vim 
+# RUN git clone --depth=1 https://github.com/pyenv/pyenv.git .pyenv
 
-ENV PYENV_ROOT="$HOME/.pyenv"
-ENV PATH="$PYENV_ROOT/shims:$PYENV_ROOT/bin:$PATH"
-RUN pyenv install 3.6.6
-RUN pyenv global 3.6.6
+RUN git clone https://github.com/suchitm/dotenv.git ~/dotenv && \
+	ln -s ~/dotenv/dotvim/vimrc ~/.vimrc && \
+	ln -s ~/dotenv/tmux/tmux.conf ~/.tmux.conf && \ 
+	ln -s ~/dotenv/dotvim/ .vim 
 
-RUN pip install --upgrade pip
+#ENV PYENV_ROOT="$HOME/.pyenv"
+#ENV PATH="$PYENV_ROOT/shims:$PYENV_ROOT/bin:$PATH"
+#RUN pyenv install 3.6.6
+#RUN pyenv global 3.6.6
+
+RUN pip3 install --upgrade pip
 
 # install python packages for airflow
-RUN pip install apache-airflow==1.10.14 \
+RUN pip3 install apache-airflow==1.10.14 \
 	apache-airflow-backport-providers-google==2020.11.13 \
 	apache-airflow-backport-providers-postgres \
 	apache-airflow-backport-providers-ssh \
@@ -89,18 +98,20 @@ RUN pip install apache-airflow==1.10.14 \
 	google-cloud-secret-manager==1.0.0 \
 	google-cloud-storage==1.33.0 \
 	google-cloud-logging==1.15.0 \
-	google-cloud-error-reporting==1.1.1
-
-RUN pip install marshmallow==2.21.0 \
+	google-cloud-error-reporting==1.1.1 \
+	marshmallow==2.21.0 \
 	marshmallow-sqlalchemy==0.17.1 \
 	pandas==1.1.4 \
 	pandas-gbq==0.14.1 \
 	paramiko \ 
 	py7zr==0.14.1 \
 	pyodbc==4.0.30 \ 
-	openpyxl==3.0.7 
+	openpyxl==3.0.7 \ 
+	SQLAlchemy==1.3.20 \
+	SQLAlchemy-JSONField==0.9.0 \
+	SQLAlchemy-Utils==0.36.8
 
-RUN pip install avro==1.10.1
+RUN pip3 install avro==1.10.1
 
 # airflow environment variables
 ENV AIRFLOW_HOME="$HOME/airflow"

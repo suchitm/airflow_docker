@@ -48,7 +48,7 @@ RUN apt-get update && \
 	liblzma-dev \
 	lsb-release \
 	man \
-	neovim \
+	vim \
 	openssh-client \
 	postgresql \
 	postgresql-contrib
@@ -76,12 +76,9 @@ RUN wget https://www.python.org/ftp/python/3.6.10/Python-3.6.10.tgz && \
 # installing python 3.6.6 and making it the global python
 ENV HOME="/root"
 WORKDIR $HOME
+
 # RUN git clone --depth=1 https://github.com/pyenv/pyenv.git .pyenv
 
-RUN git clone https://github.com/suchitm/dotenv.git ~/dotenv && \
-	ln -s ~/dotenv/dotvim/vimrc ~/.vimrc && \
-	ln -s ~/dotenv/tmux/tmux.conf ~/.tmux.conf && \ 
-	ln -s ~/dotenv/dotvim/ .vim 
 
 #ENV PYENV_ROOT="$HOME/.pyenv"
 #ENV PATH="$PYENV_ROOT/shims:$PYENV_ROOT/bin:$PATH"
@@ -134,7 +131,17 @@ RUN mkdir "$HOME/airflow/"
 
 RUN service postgresql start && \
 	sudo -u postgres psql -c "ALTER user postgres WITH PASSWORD 'postgres'" && \
-	airflow db init
+	airflow db init && \
+	sed -i 's/airflow\/dags/airflow_docker\/dags/' $HOME/airflow/airflow.cfg && \
+	sed -i 's/sqlite:\/\/\/\/root\/airflow\/airflow.db/postgresql+psycopg2:\/\/postgres:postgres@localhost\/postgres/' $HOME/airflow/airflow.cfg && \
+	sed -i 's/SequentialExecutor/LocalExecutor/' $HOME/airflow/airflow.cfg 
+
+RUN git clone https://github.com/suchitm/dotenv.git ~/dotenv && \
+	ln -s ~/dotenv/dotvim/vimrc ~/.vimrc && \
+	ln -s ~/dotenv/tmux/tmux.conf ~/.tmux.conf && \ 
+	ln -s ~/dotenv/dotvim/ .vim && \
+	cd ~/dotenv && \
+	git submodule update --init --recursive
 
 # RUN airflow db init
 

@@ -28,7 +28,7 @@ def _get_pictures():
   pathlib.Path("/tmp/images").mkdir(parents = True, exist_ok = True)
 
   # download all pictures in launches.json
-  with open("/tmp/launches.json") as f:
+  with open("/tmp/launches.json", encoding = "utf-8") as f:
     launches = json.load(f)
     image_urls = [launch["image"] for launch in launches["results"]]
     for image_url in image_urls:

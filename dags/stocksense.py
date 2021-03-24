@@ -54,7 +54,7 @@ def _fetch_pageviews(pagenames, date):
     for pagename, pageviewcount in result.items():
       f.write(
         "INSERT INTO pageview_counts VALUES("
-        f"'{pagename}, {pageviewcount}, '{date}'"
+        f"'{pagename}', {pageviewcount}, '{date}'"
         ");\n"
       )
 

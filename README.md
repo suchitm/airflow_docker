@@ -7,4 +7,12 @@ docker build -t pytest .
 
 # run the docker image interactively
 docker run -it pytest
+
+# list all containers stopped and running
+docker ps -a
+
+# delete all containers
+docker rm $(docker ps -a -q)
+
+# 
 ```
